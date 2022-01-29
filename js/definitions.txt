@@ -1,0 +1,61 @@
+Definitions and notes:
+
+Note: Rows are padded with two zeroes (padding bits) at the beginning and at the end for ease of computation. Since this program only looks for stripe-restricted photons, we only store half of the rows, as every other row is guaranteed to be blank.
+
+Definition: A panel is a list of p rows, representing the evolution of a single row over time. For example, consider this photon in B2a3n/S with p=2 and w=2:
+    ##
+##  ..
+..  .#
+#.
+If we broke it up into panels, it would look something like this:
+First panel:
+..##..
+..##..
+Second panel:
+..#...
+...#..
+Note that the first panel and a single entry from the second panel can uniquely determine the rest of the second panel.
+
+Definition: A node is part of a tree, and a tree refers to the collection of nodes as a whole. It has one or two entries in it. The first entry is always present-this entry contains the panel for this node. The second entry, if present, contains a list of child nodes (also referred to as branches). If absent, we have not computed the child nodes yet. We use a tree instead of a list to save space, as many partials may have the same frontends. As an example, suppose that we have these two partials stored in the tree right now, that we are searching at p=2 and w=3, and the rule is B2ak3n4y. We know that the first partial has no extensions, but we haven't searched the second partial yet.
+     .##
+.##  ...
+...  #.#
+##.
+
+     .##
+.##  ...
+...  .#.
+..#
+The root node of our tree has this panel in it:
+...##..
+...##..
+Our node has two children. The first child has this panel:
+..##...
+..#.#..
+Because it has no extensions, its second entry is a blank list.
+The second child has this panel:
+....#..
+...#...
+We haven't searched it yet, so it doesn't have a second entry. Here is a human-readable version of the tree:
+(
+  panel:
+  ...##..
+  ...##..
+
+  children:
+  (
+    panel:
+    ..##...
+    ..#.#..
+
+    children: (none)
+  ),
+  (
+    panel:
+    ....#..
+    ...#...
+
+    (There is no "children" entry here)
+  )
+)
+Note that keeping a list of partials would require us to store the first panel twice, which would take up more space.
