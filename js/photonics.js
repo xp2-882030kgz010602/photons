@@ -276,32 +276,44 @@ var gettreesize=function(){
   return size;
 };
 var backuptree=function(){
-  fs.writeFileSync(backupfile,'{"rule":'+JSON.stringify(rule)+',"p":'+p+',"w":'+w+',"tree":');
-  var stack=[tree];
-  while(stack.length>0){
-    var item=stack.pop();
-    if(typeof item==="string"){//We can just add it directly
-      fs.appendFileSync(backupfile,item);
-      continue;
-    }
-    fs.appendFileSync(backupfile,"["+JSON.stringify(item[0]));//First part of node
-    if(item.length===1){
-      fs.appendFileSync(backupfile,"]");//Termination of node
-    }else{//But there's a bunch of other stuff to add first
-      fs.appendFileSync(backupfile,",[");//Start the list of children
-      var branches=item[1];
-      var length=branches.length;
-      stack.push("]]");//Termination for the list and for the node
-      for(var i=length-1;i>=0;i--){//We push items onto the stack in reverse order, because popping them will give them to us in the correct order.
-        stack.push(branches[i]);
-        stack.push(",");
+  var queue=[tree];
+  while(queue.length>1||typeof queue[0]==="object"){//Not "array" for some reason
+    var newqueue=[];
+    var i=0;
+    while(i<queue.length){
+      var item=queue[i];
+      if(typeof item==="object"){
+        newqueue.push("["+JSON.stringify(item[0]));//The panels should be fine
+        if(item.length===2){
+          newqueue.push(",[");
+          var branches=item[1];
+          var l=branches.length;
+          for(var j=0;j<l;j++){
+            newqueue.push(branches[j]);
+            newqueue.push(",");
+          }
+          if(l){
+            newqueue.pop();
+          }
+          newqueue.push("]");
+        }
+        newqueue.push("]");
+        i+=1;
+      }else{//It's a string
+        var nextitem=queue[i+1];
+        if(typeof nextitem==="string"){
+          newqueue.push(item+nextitem);
+          i+=2;
+        }else{
+          newqueue.push(item);
+          i+=1;
+        }
       }
-      if(length){
-        stack.pop();
-      }
     }
+    queue=newqueue;
   }
-  fs.appendFileSync(backupfile,"}");
+  var backup="{\"tree\":"+queue[0]+",\"rule\":"+JSON.stringify(rule)+",\"p\":"+p+",\"w\":"+w+"}";
+  fs.writeFileSync(backupfile,backup);
 };
 var iterations=0;
 var statusreport=function(){
