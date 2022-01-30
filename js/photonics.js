@@ -336,8 +336,8 @@ while(true){
     process.exit();
   }
   if(Date.now()-15000>=t0){
-    t0=Date.now();
     statusreport();
     backuptree();
+    t0=Date.now();
   }
 }
