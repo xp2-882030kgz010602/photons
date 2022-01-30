@@ -195,7 +195,6 @@ var nodestack=[];
 var panels=[currnode[0]];//For deduping purposes
 var search=function(){//Do one iteration of DFS
   //First, we try to find the first unsearched node on the tree. On the way, we may be able to clean some things up.
-  var count=0;
   while(currnode.length===2){
     var viable=[];
     var branches=currnode[1];//We know that this exists, since node.length===2.
