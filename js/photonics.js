@@ -13,22 +13,32 @@ var transitionstable=[18,18,18,19,18,0,19,4,18,0,1,5,2,3,6,11,18,1,18,7,1,8,7,12
 //B2c B3c B3y B4y B3c B4c B4y B5e
 //B2a B3q B3r B4z B3n B4y B4i B5r
 //B3i B4n B4t B5r B4n B5e B5r B6i
+if(process.version==="v15.14.0"){
+  console.log("WARNING: RUNNING THIS PROGRAM WITH THIS VERSION OF NODE.JS IS KNOWN TO CAUSE MEMORY LEAKS. TRY v12.22.9 OR v16.13.2 INSTEAD.");
+}
 var input=0;
 var isjson=false;
+var backupfile="./backup.json";
 var args=process.argv;
 for(var i=0;i<args.length;i++){
   var arg=args[i];
   if(arg.substring(0,6)==="input="){
     input=arg.substring(6);
-  }else if(arg==="json"){
+  }else if(arg==="json=true"){
     isjson=true;
+  }else if(arg.substring(0,7)==="backup="){
+    backupfile=arg.substring(7);
   }
 }
 if(!input){
-  console.log("Try:");
-  console.log("node filename.js input=./inputfile.txt");
-  console.log("Or from a JSON backup:");
-  console.log("node filename.js input=./backup.json json");
+  console.log("Required arguments:");
+  console.log("input=filename");
+  console.log("  Tells the program where to read the input file.");
+  console.log("Optional arguments:");
+  console.log("json=true/false");
+  console.log("  If this is true, then the program will read the input file as a JSON backup. False by default.");
+  console.log("backup=filename");
+  console.log("  If specified, save backups to this file. ./backup.json by default.");
   process.exit();
 }
 input=fs.readFileSync(input,"utf-8").split("\r").join("").split("\n");
@@ -304,7 +314,7 @@ var backuptree=function(){
     queue=newqueue;
   }
   var backup="{\"tree\":"+queue[0]+",\"rule\":"+JSON.stringify(rule)+",\"p\":"+p+",\"w\":"+w+"}";
-  fs.writeFileSync("./backup.json",backup);
+  fs.writeFileSync(backupfile,backup);
 };
 var iterations=0;
 var statusreport=function(){
@@ -326,7 +336,7 @@ while(true){
     console.log("No more objects");
     process.exit();
   }
-  if(Date.now()-15000>=t0){
+  if(Date.now()-30000>=t0){
     t0=Date.now();
     statusreport();
     backuptree();
