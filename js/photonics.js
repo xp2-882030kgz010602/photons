@@ -286,7 +286,7 @@ var backuptree=function(){
     }
     backup+="["+JSON.stringify(item[0]);//First part of node
     if(item.length===1){
-      backup="]";//Termination of node
+      backup+="]";//Termination of node
     }else{//But there's a bunch of other stuff to add first
       backup+=",[";//Start the list of children
       var branches=item[1];
