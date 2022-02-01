@@ -466,10 +466,10 @@ var searchwrapper=function(){
     search();
     iterations+=1;
     if(tree[1].length===0){//We're done
+      statusreport();
       addtoconsole("No more objects");
       paused=true;
       pausebutton.text="Search";
-      statusreport();
       return;
     }
     if(paused){
