@@ -1,0 +1,504 @@
+Notes:<br>
+This app may behave weirdly with bad inputs.<br>
+The "Load" button only loads the pattern. The period, width, and rule are automatically loaded whenever you edit them.<br>
+The "Load from JSON" button loads everything, but only the period, width, and rule are displayed. The tree from a JSON input cannot be converted into the format used in a plaintext input.<br>
+The app will automatically pause when it finds a spaceship, since unlike the console versions of this app, there is nothing that one can do to redirect a potential flood of spaceships to a file.<br>
+This app does not make automatic backups, see the following warning:<br>
+Some browsers do not log memory usage. In that case I simply cannot report on that.<br>
+WARNING: JSON-RELATED OPERATIONS CAN BE EXTREMELY LAGGY.<br>
+<input type="checkbox" id="B2c" name="B2c" value="B2c">
+<label for="B2c">B2c</label>
+<input type="checkbox" id="B2k" name="B2k" value="B2k">
+<label for="B2k">B2k</label>
+<input type="checkbox" id="B2n" name="B2n" value="B2n">
+<label for="B2n">B2n</label>
+<input type="checkbox" id="B3c" name="B3c" value="B3c">
+<label for="B3c">B3c</label>
+<input type="checkbox" id="B3i" name="B3i" value="B3i">
+<label for="B3i">B3i</label>
+<input type="checkbox" id="B3n" name="B3n" value="B3n">
+<label for="B3n">B3n</label>
+<input type="checkbox" id="B3q" name="B3q" value="B3q">
+<label for="B3q">B3q</label>
+<input type="checkbox" id="B3r" name="B3r" value="B3r">
+<label for="B3r">B3r</label>
+<input type="checkbox" id="B3y" name="B3y" value="B3y">
+<label for="B3y">B3y</label><br>
+<input type="checkbox" id="B4c" name="B4c" value="B4c">
+<label for="B4c">B4c</label>
+<input type="checkbox" id="B4i" name="B4i" value="B4i">
+<label for="B4i">B4i</label>
+<input type="checkbox" id="B4n" name="B4n" value="B4n">
+<label for="B4n">B4n</label>
+<input type="checkbox" id="B4t" name="B4t" value="B4t">
+<label for="B4t">B4t</label>
+<input type="checkbox" id="B4y" name="B4y" value="B4y">
+<label for="B4y">B4y</label>
+<input type="checkbox" id="B4z" name="B4z" value="B4z">
+<label for="B4z">B4z</label>
+<input type="checkbox" id="B5e" name="B5e" value="B5e">
+<label for="B5e">B5e</label>
+<input type="checkbox" id="B5r" name="B5r" value="B5r">
+<label for="B5r">B5r</label>
+<input type="checkbox" id="B6i" name="B6i" value="B6i">
+<label for="B6i">B6i</label><br>
+Period: <input type="text" id="p" name="P" value="1"><br>
+Width: <input type="text" id="w" name="w" value="1"><br>
+<div style="display:inline-flex;">
+ <div>
+  <div style="display:inline-flex;">
+   <div>
+    <textarea id="input" wrap="off" rows=4 cols=18>
+1
+1
+000000000000000000
+.</textarea>
+    <br>
+    <a href="#" id="load">Load</a>
+   </div>
+   <div>
+    <textarea id="console" wrap="off" rows=5 cols=22></textarea>
+    <br>
+    <a href="#" id="clear">Clear</a>
+    <a href="#" id="pause">Search</a>
+   </div>
+  </div>
+  <br>
+  <div>
+   <textarea id="backup" wrap="off" rows=9 cols=40></textarea>
+   <br>
+   <a href="#" id="loadbackup">Load from JSON</a>
+   <a href="#" id="savebackup">Save to JSON</a>
+  </div>
+ </div>
+ <div>
+  <textarea id="spaceship" wrap="off" rows=18 cols=7></textarea>
+  <br>
+ </div>
+</div>
+<script>
+var transitionstable;
+var rule=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+var p=1;
+var w=1;
+var w2=w+2;
+var w4=w+4;
+var inputbox=document.getElementById("input");
+var outputbox=document.getElementById("spaceship");
+var pbox=document.getElementById("p");
+var wbox=document.getElementById("w");
+var setuptable=function(){
+  transitionstable=[18,18,18,19,18,0,19,4,18,0,1,5,2,3,6,11,18,1,18,7,1,8,7,12,19,5,7,10,6,13,14,16,18,2,1,6,0,3,5,11,0,3,8,13,3,9,13,15,19,6,7,14,5,13,10,16,4,11,12,16,11,15,16,17];
+  for(var i=0;i<64;i++){//Since the rule is constant, we can make transitionstable directly into a lookup table instead of first looking up the transition then looking up its status.
+    transitionstable[i]=rule[transitionstable[i]];
+  }
+  var strrule=rule.join("").substring(0,18);
+  var inputtext=inputbox.value.split("\r").join("").split("\n");
+  inputtext[2]=strrule;
+  inputbox.value=inputtext.join("\n");
+};
+var B2cbox=document.querySelector('input[value="B2c"]');
+var B2kbox=document.querySelector('input[value="B2k"]');
+var B2nbox=document.querySelector('input[value="B2n"]');
+var B3cbox=document.querySelector('input[value="B3c"]');
+var B3ibox=document.querySelector('input[value="B3i"]');
+var B3nbox=document.querySelector('input[value="B3n"]');
+var B3qbox=document.querySelector('input[value="B3q"]');
+var B3rbox=document.querySelector('input[value="B3r"]');
+var B3ybox=document.querySelector('input[value="B3y"]');
+var B4cbox=document.querySelector('input[value="B4c"]');
+var B4ibox=document.querySelector('input[value="B4i"]');
+var B4nbox=document.querySelector('input[value="B4n"]');
+var B4tbox=document.querySelector('input[value="B4t"]');
+var B4ybox=document.querySelector('input[value="B4y"]');
+var B4zbox=document.querySelector('input[value="B4z"]');
+var B5ebox=document.querySelector('input[value="B5e"]');
+var B5rbox=document.querySelector('input[value="B5r"]');
+var B6ibox=document.querySelector('input[value="B6i"]');
+var boxes=[B2cbox,B2kbox,B2nbox,B3cbox,B3ibox,B3nbox,B3qbox,B3rbox,B3ybox,B4cbox,B4ibox,B4nbox,B4tbox,B4ybox,B4zbox,B5ebox,B5rbox,B6ibox];
+var addbox=function(box,n){
+  box.addEventListener("change",()=>{
+    rule[n]=box.checked*1;
+    setuptable();
+  });
+};
+for(var i=0;i<18;i++){
+  addbox(boxes[i],i);
+}
+var updateruleboxes=function(){
+  for(var i=0;i<18;i++){
+    boxes[i].checked=rule[i];
+  }
+};
+inputbox.addEventListener("input",()=>{
+  var inputtext=inputbox.value.split("\r").join("").split("\n");
+  rule=(inputtext[2]+"01").split("");
+  for(var i=0;i<20;i++){
+    rule[i]*=1;
+  }
+  updateruleboxes();
+  inputbox.rows=inputtext.length;
+  p=inputtext[0]*1;
+  w=inputtext[1]*1;
+  pbox.value=p;
+  wbox.value=w;
+  w2=w+2;
+  w4=w+4;
+  inputbox.cols=Math.max(18,w);
+  document.getElementById("spaceship").cols=Math.max(7,w4);
+});
+pbox.addEventListener("input",()=>{
+  p=pbox.value*1;
+  var inputtext=inputbox.value.split("\r").join("").split("\n");
+  inputtext[0]=p;
+  inputbox.value=inputtext.join("\n");
+});
+wbox.addEventListener("input",()=>{
+  w=wbox.value*1;
+  w2=w+2;
+  w4=w+4;
+  var inputtext=inputbox.value.split("\r").join("").split("\n");
+  inputtext[1]=w;
+  inputbox.value=inputtext.join("\n");
+  inputbox.cols=Math.max(18,w);
+  outputbox.cols=Math.max(7,w4);
+});
+var iterate=function(r0,r1){
+  //0 1 2 3 4 ...   w   w+2
+  //              w-1 w+1 w+3
+  //0 0 ? ? ? ... ? ? ? 0 0
+  var nextrow=[0];
+  var n=0;//It's currently centered at index 0
+  for(var i=2;i<w4;i++){//We loop this way because it lands us right on top of the row indices that we need.
+    n&=27;//Discard the left two bits of the neighborhood, since we aren't going to look at them again.
+    n*=2;//Shift left
+    n+=8*r0[i];//Insert the new bits on the right
+    n+=r1[i];
+    nextrow.push(transitionstable[n]);
+  }
+  nextrow.push(0);
+  return nextrow;
+};
+var requal=function(r0,r1){//Test row equality because === doesn't work
+  for(var i=2;i<w2;i++){//Don't test the padding bits
+    if(r0[i]!==r1[i]){
+      return false;
+    }
+  }
+  return true;
+};
+var pequal=function(p0,p1){//Test panel equality up to rotation.
+  rotation:
+  for(var di=0;di<p;di++){
+    for(var i=0;i<p;i++){
+      var idi=(i+di)%p;
+      if(!requal(p0[i],p1[idi])){//No, it's not equal
+        continue rotation;
+      }
+    }
+    return true;//Every row has to be equal for us to get here
+  }
+  return false;//No rotation matches
+};
+var inlist=function(p,plist){//Test if a panel is in a list of panels, up to rotation
+  for(var i=0;i<plist.length;i++){
+    if(pequal(p,plist[i])){
+      return true;
+    }
+  }
+  return false;
+};
+var r2p=function(p0,r1){//Convert r1 into a panel, where p0 "is" the top row. Returns false if r1 won't reappear after p generations.
+  var panel=[r1.slice()];
+  for(var i=0;i<p;i++){
+    r1=iterate(p0[i],r1);
+    if(r1[1]||r1[w2]){//We expanded out of our width
+      return false;
+    }
+    panel.push(r1);
+  }
+  var image=panel.pop();
+  if(!requal(panel[0],image)){//This doesn't work
+    return false;
+  }
+  return panel;
+};
+var parserow=function(str){
+  var row=[0,0];
+  for(var i=0;i<w;i++){
+    if(str[i]==="."){
+      row.push(0);
+    }else{
+      row.push(1);
+    }
+  }
+  row.push(0);
+  row.push(0);
+  return row;
+}
+var tree;
+var searched=0;
+var eliminated=0;
+var currnode;
+var nodestack=[];
+var panels;//For deduping purposes
+var iterations=0;
+var loadbutton=document.getElementById("load");
+loadbutton.addEventListener("click",(event)=>{
+  setuptable();
+  iterations=0;
+  var input=inputbox.value.split("\r").join("").split("\n");
+  var ri=3;
+  var p0=[];
+  for(var i=0;i<p;i++){
+    p0.push(parserow(input[ri]));
+    ri+=1;
+  }
+  var startingpanels=[p0];
+  while(ri<input.length){//Get the rest of the rows
+    startingpanels.push(parserow(input[ri]));
+    ri+=1;
+  }
+  var sl=startingpanels.length;
+  for(var i=1;i<sl;i++){//Build the rest of the panels
+    var panel=r2p(startingpanels[i-1],startingpanels[i]);
+    if(panel){
+      startingpanels[i]=panel;
+    }else{
+      alert("Invalid row");
+      return;
+    }
+  }
+  tree=[startingpanels[sl-1]];
+  for(var i=sl-2;i>=0;i--){//Now build the tree
+    tree=[startingpanels[i],[tree]];
+  }
+  searched=0;
+  eliminated=0;
+  currnode=tree;
+  nodestack=[];
+  panels=[currnode[0]];//For deduping purposes
+  alert("All good!");
+  event.preventDefault();
+});
+var loadbackupbutton=document.getElementById("loadbackup");
+var backupbox=document.getElementById("backup");
+loadbackupbutton.addEventListener("click",(event)=>{
+  event.preventDefault();
+  iterations=0;
+  var input=JSON.parse(backupbox.value);
+  tree=input.tree;
+  p=input.p;
+  w=input.w;
+  rule=input.rule;
+  w2=w+2;
+  w4=w+4;
+  setuptable();
+  var inputtext=inputbox.value.split("\r").join("").split("\n");
+  inputtext[0]=p;
+  inputtext[1]=w;
+  inputtext[2]=rule.join("").substring(0,18);
+  inputbox.value=inputtext.join("\n");
+  pbox.value=p;
+  wbox.value=w;
+  updateruleboxes();
+});
+var backuptree=function(){
+  backupbox.value='{"rule":'+JSON.stringify(rule)+',"p":'+p+',"w":'+w+',"tree":';
+  var stack=[tree];
+  while(stack.length>0){
+    var item=stack.pop();
+    if(typeof item==="string"){//We can just add it directly
+      backupbox.value+=item;
+      continue;
+    }
+    backupbox.value+="["+JSON.stringify(item[0]);//First part of node
+    if(item.length===1){
+      backupbox.value+="]";//Termination of node
+    }else{//But there's a bunch of other stuff to add first
+      backupbox.value+=",[";//Start the list of children
+      var branches=item[1];
+      var length=branches.length;
+      stack.push("]]");//Termination for the list and for the node
+      for(var i=length-1;i>=0;i--){//We push items onto the stack in reverse order, because popping them will give them to us in the correct order.
+        stack.push(branches[i]);
+        stack.push(",");
+      }
+      if(length){
+        stack.pop();
+      }
+    }
+  }
+  backupbox.value+="}";
+};
+document.getElementById("savebackup").addEventListener("click",(event)=>{
+  backuptree();
+  event.preventDefault();
+});
+var textconsole=document.getElementById("console");
+var clearbutton=document.getElementById("clear");
+var consolewidth=22;
+clearbutton.addEventListener("click",(event)=>{
+  textconsole.value="";
+  consolewidth=22;
+  textconsole.cols=consolewidth;
+  event.preventDefault();
+});
+var addtoconsole=function(str){
+  consolewidth=Math.max(consolewidth,str.length);
+  textconsole.cols=consolewidth;
+  textconsole.value+=str+"\n";
+};
+var paused=true;
+var gettreesize=function(){
+  var size=0;
+  var stack=[tree];
+  while(stack.length){
+    var node=stack.pop();
+    size+=1;
+    if(node.length===2){
+      stack=stack.concat(node[1]);
+    }
+  }
+  return size;
+};
+var statusreport=function(){
+  addtoconsole("Iterations completed: "+iterations);
+  addtoconsole("Tree size: "+gettreesize());
+  addtoconsole("Nodes searched: "+searched);
+  addtoconsole("Nodes eliminated: "+eliminated);
+  var memory=performance.memory;
+  if(memory){
+    console.log("Memory usage: "+memory.totalJSHeapSize/1000000+" MB");
+  }
+  searched=0;
+  eliminated=0;
+};
+var printpanels=function(panels){
+  var height=panels.length;
+  outputbox.value="x="+w4+",y="+(2*height-1)+"\n";
+  for(var i=0;i<height;i++){
+    if(i){
+      outputbox.value+="$$\n";
+    }
+    for(var j=0;j<w4;j++){
+      outputbox.value+=".o"[panels[i][0][j]];
+    }
+  }
+  outputbox.value+="!";
+};
+var search=function(){//Do one iteration of DFS
+  //First, we try to find the first unsearched node on the tree. On the way, we may be able to clean some things up.
+  while(currnode.length===2){
+    var viable=[];
+    var branches=currnode[1];//We know that this exists, since node.length===2.
+    for(var i=0;i<branches.length;i++){//Sift through the branches on this node, and find the viable ones.
+      var child=branches[i];
+      if(child.length===1||child[1].length>0){
+        //The first condition means that the child hasn't been searched yet, so it could be viable.
+        //Iff the second condition is FALSE, then we've ruled out all extensions from that child, so the child is not viable.
+        viable.push(child);
+      }else{
+        eliminated+=1;
+      }
+    }
+    currnode[1]=viable;
+    if(viable.length){
+      nodestack.push(currnode);
+      currnode=viable[0];//Move up the tree
+      panels.push(currnode[0]);
+    }else{//We're stuck here since we don't know how far back we might have to go, so let's return and try again
+      currnode=nodestack.pop();//But we can still go back one layer
+      panels.pop();
+      return;
+    }
+  }//At this point, we've reached a node whose children we haven't computed yet.
+  searched+=1;
+  var branches=[];
+  var row=[0,0,0,0];
+  for(var i=0;i<w;i++){
+    row.push(0);//Fill the row up with zeroes
+  }//Compute the panel for the blank row separately. If the entire panel is blank, we've got a spaceship.
+  var panel=currnode[0];
+  var solutions=[];
+  var zero=r2p(panel,row);
+  if(zero){//Test for blankness
+    blank:{
+      for(var i=0;i<p;i++){
+        for(var j=2;j<w2;j++){//Should be faster than calling requal(zero[i],row) because we know that row will be blank, and requal doesn't
+          if(zero[i][j]){
+            if(!inlist(zero,panels)&&!inlist(zero,solutions)){
+              solutions.push(zero);//We add this solution panel, so that if a different rotation shows up, we know to skip it. This kind of stuff can show up if a higher-period part follows a lower-period part.
+              branches.push([zero]);
+            }
+            break blank;
+          }
+        }
+      }
+      addtoconsole("Spaceship found");//It's blank! We found a spaceship!
+      printpanels(panels);
+      pausebutton.text="Search";
+      paused=true;
+    }
+  }
+  while(true){//Now brute-force the rest of the possible rows
+    var i=2;//First non-padding bit
+    while(row[i]){
+      row[i]=0;//Carry over
+      i+=1;
+    }
+    if(i===w2){//First right padding bit
+      break;
+    }
+    row[i]=1;//Then we know this one is zero, so we can just increment it to 1
+    var newpanel=r2p(panel,row);
+    if(newpanel&&!inlist(newpanel,panels)&&!inlist(newpanel,solutions)){
+      solutions.push(newpanel);
+      branches.push([newpanel]);
+    }
+  }
+  currnode.push(branches);//We're done, so let's add the branches to the node
+};
+var nolag=Date.now();
+var reporttimer=Date.now();
+var searchwrapper=function(){
+  while(true){
+    search();
+    iterations+=1;
+    if(tree[1].length===0){//We're done
+      addtoconsole("No more objects");
+      paused=true;
+      pausebutton.text="Search";
+      statusreport();
+      return;
+    }
+    if(paused){
+      return;
+    }
+    var t1=Date.now();
+    if(t1-reporttimer>30000){
+      reporttimer=t1;
+      statusreport();
+    }
+    if(t1-nolag>100){//We do a sub-millisecond pause like this, but it somehow is enough to stop the tab from freezing.
+      nolag=t1;
+      setTimeout(()=>{searchwrapper()},0);
+      return;
+    }
+  }
+};
+var pausebutton=document.getElementById("pause");
+pausebutton.addEventListener("click",(event)=>{
+  event.preventDefault();
+  paused=!paused;
+  if(paused){
+    pausebutton.text="Search";
+  }else{
+    pausebutton.text="Pause";
+    if(iterations===0){
+      statusreport();
+    }
+    searchwrapper();
+  }
+});
+</script>
