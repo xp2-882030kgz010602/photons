@@ -243,6 +243,12 @@ var currnode;
 var nodestack=[];
 var panels;//For deduping purposes
 var iterations=0;
+var textconsole=document.getElementById("console");
+var addtoconsole=function(str){
+  consolewidth=Math.max(consolewidth,str.length);
+  textconsole.cols=consolewidth;
+  textconsole.value+=str+"\n";
+};
 var loadbutton=document.getElementById("load");
 loadbutton.addEventListener("click",(event)=>{
   setuptable();
@@ -265,7 +271,7 @@ loadbutton.addEventListener("click",(event)=>{
     if(panel){
       startingpanels[i]=panel;
     }else{
-      alert("Invalid row");
+      addtoconsole("Invalid row");
       return;
     }
   }
@@ -278,7 +284,7 @@ loadbutton.addEventListener("click",(event)=>{
   currnode=tree;
   nodestack=[];
   panels=[currnode[0]];//For deduping purposes
-  alert("All good!");
+  addtoconsole("All good!");
   event.preventDefault();
 });
 var loadbackupbutton=document.getElementById("loadbackup");
@@ -335,7 +341,6 @@ document.getElementById("savebackup").addEventListener("click",(event)=>{
   backuptree();
   event.preventDefault();
 });
-var textconsole=document.getElementById("console");
 var clearbutton=document.getElementById("clear");
 var consolewidth=22;
 clearbutton.addEventListener("click",(event)=>{
@@ -344,11 +349,6 @@ clearbutton.addEventListener("click",(event)=>{
   textconsole.cols=consolewidth;
   event.preventDefault();
 });
-var addtoconsole=function(str){
-  consolewidth=Math.max(consolewidth,str.length);
-  textconsole.cols=consolewidth;
-  textconsole.value+=str+"\n";
-};
 var paused=true;
 var gettreesize=function(){
   var size=0;
