@@ -497,6 +497,7 @@ pausebutton.addEventListener("click",(event)=>{
     pausebutton.text="Pause";
     if(iterations===0){
       statusreport();
+      reporttimer=Date.now();
     }
     searchwrapper();
   }
