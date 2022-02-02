@@ -373,7 +373,7 @@ var statusreport=function(){
   addtoconsole("Nodes eliminated: "+eliminated);
   var memory=performance.memory;
   if(memory){
-    console.log("Memory usage: "+memory.totalJSHeapSize/1000000+" MB");
+    addtoconsole("Memory usage: "+memory.totalJSHeapSize/1000000+" MB");
   }
   searched=0;
   eliminated=0;
