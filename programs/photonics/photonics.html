@@ -174,7 +174,7 @@ var iterate=function(r0,r1){
   var n=0;//It's currently centered at index 0
   for(var i=2;i<w4;i++){//We loop this way because it lands us right on top of the row indices that we need.
     n&=27;//Discard the left two bits of the neighborhood, since we aren't going to look at them again.
-    n*=2;//Shift left
+    n*=2;//Shift left (JS would spend time converting to int32s and back)
     n+=8*r0[i];//Insert the new bits on the right
     n+=r1[i];
     nextrow.push(transitionstable[n]);
