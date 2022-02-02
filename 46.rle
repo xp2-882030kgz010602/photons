@@ -1,11 +1,7 @@
-x = 11, y = 293, rule = B2aen3ciy4iknz/S
-2b2ob2o$8b2o$3obob2o2bo2$bobo2b2o2$2bo2$2o2$6b2o2$4b3o2$o2b4o4$2bo2$2b
-o2$obo2$2bobo2$3b3o2$b2o3b2o2$b2o2$b2o2$b3o12$b3o2$bob2o2$b2o2$4b2o2$
-4b2o6$3b2o2$3b2o4$3b3o2$5bo2$o2b3o2$2o3b2o2$2o3b2o2$2o3b2o2$2o3b2o2$2o
-3b2o2$6bo2$6b2o2$b2o3b2o2$b2o3b2o2$6b2o2$2b2o2b2o2$2b2o2b2o2$2b2o2b2o
-2$2b2o2b2o2$2b2o12$5b2o2$5b2o2$5b2o2$b2o2b2o2$bo2bo6$4b2o2$4b2o2$b5o2$
-bo2$4bo2$3bo2$3b2o2$3b2o2$2o2$o2$3bo8$b2o2$2o4$bo2$b2o2$b2o2$b2o2$b2o
-2$2b3o2$3b2o4$3bo2$3b2o2$3b2o4$b2o2$b2o2$4bo2$4bo4$2b2o4$4o2$3bo2$bo2$
-bo2$2b2o2$2b2o2$3o2$b2o4$2o4$2o2$2o2$2o2$2o2$2o2$2o4$2o6$b2o2$b2o2$b2o
-2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o
-2$b2o2$2bo4$b2o2$b3o2$b2o2$b2o2$b2o2$b2o2b2o2$3bo2bo!
+x = 11, y = 165, rule = B2aen3ciy4iknz/S
+2b2ob2o$8b2o$3obob2o2bo2$2b2ob3o2$b2o3b2o8$3b5o2$5o4$7bo2$2o3b2o2$o2b
+ob2o2$3bob3o4$4b2o2$o2$o2$o2b3o2$3o2b2o2$5b2o4$2o2$2o6$bo2b3o2$b2o3b2o
+2$2b2o2b2o2$6b2o2$6b2o2$b2o3b2o2$2b2o2b2o2$2b2o2b2o6$b2o10$3b2o2$3b2o
+2$3b2o2$3b2o2$3b2o2$3b2o2$3b2o2$3b2o2$3b2o2$3b2o6$b2o3b2o2$6b2o2$6b2o
+2$4bo2bo8$3b4o2$4b2o4$4b2o2$b2o2bo2$bo2$b2o8$b3o2$b3o4$b3o2$3bo2$2b2o
+2$b2o2$b2o2$b2o2$b2o2$b2o2$b2o2b2o2$3bo2bo!
