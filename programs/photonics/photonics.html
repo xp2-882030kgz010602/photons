@@ -83,6 +83,7 @@ var p=1;
 var w=1;
 var w2=w+2;
 var w4=w+4;
+var w6=w+6;
 var inputbox=document.getElementById("input");
 var outputbox=document.getElementById("spaceship");
 var pbox=document.getElementById("p");
@@ -144,6 +145,7 @@ inputbox.addEventListener("input",()=>{
   wbox.value=w;
   w2=w+2;
   w4=w+4;
+  w6=w+6;
   inputbox.cols=Math.max(18,w);
   document.getElementById("spaceship").cols=Math.max(7,w4);
 });
@@ -157,11 +159,12 @@ wbox.addEventListener("input",()=>{
   w=wbox.value*1;
   w2=w+2;
   w4=w+4;
+  w6=w+6;
   var inputtext=inputbox.value.split("\r").join("").split("\n");
   inputtext[1]=w;
   inputbox.value=inputtext.join("\n");
   inputbox.cols=Math.max(18,w);
-  outputbox.cols=Math.max(7,w4);
+  outputbox.cols=Math.max(7,w6);
 });
 var iterate=function(r0,r1){
   //0 1 2 3 4 ...   w   w+2
@@ -299,6 +302,7 @@ loadbackupbutton.addEventListener("click",(event)=>{
   rule=input.rule;
   w2=w+2;
   w4=w+4;
+  w6=w+6;
   setuptable();
   var inputtext=inputbox.value.split("\r").join("").split("\n");
   inputtext[0]=p;
