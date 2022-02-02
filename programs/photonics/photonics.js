@@ -33,7 +33,7 @@ for(var i=0;i<args.length;i++){
 if(!input){
   console.log("Required arguments:");
   console.log("input=filename");
-  console.log("  Tells the program where to read the input file.");
+  console.log("  Tells the program where to find the input file.");
   console.log("Optional arguments:");
   console.log("json=true/false");
   console.log("  If this is true, then the program will read the input file as a JSON backup. False by default.");
@@ -233,7 +233,7 @@ var search=function(){//Do one iteration of DFS
       for(var i=0;i<p;i++){
         for(var j=2;j<w2;j++){//Should be faster than calling requal(zero[i],row) because we know that row will be blank, and requal doesn't
           if(zero[i][j]){
-            if(!inlist(zero,panels)&&!inlist(zero,solutions)){
+            if(!inlist(zero,panels)){//solutions is currently blank
               solutions.push(zero);//We add this solution panel, so that if a different rotation shows up, we know to skip it. This kind of stuff can show up if a higher-period part follows a lower-period part.
               branches.push([zero]);
             }
@@ -256,7 +256,7 @@ var search=function(){//Do one iteration of DFS
     }
     row[i]=1;//Then we know this one is zero, so we can just increment it to 1
     var newpanel=r2p(panel,row);
-    if(newpanel&&!inlist(newpanel,panels)&&!inlist(newpanel,solutions)){
+    if(newpanel&&!(inlist(newpanel,panels)||inlist(newpanel,solutions))){
       solutions.push(newpanel);
       branches.push([newpanel]);
     }
@@ -278,7 +278,7 @@ var gettreesize=function(){
 var backuptree=function(){
   var backup='{"rule":'+JSON.stringify(rule)+',"p":'+p+',"w":'+w+',"tree":';
   var stack=[tree];
-  while(stack.length>0){
+  while(stack.length){
     var item=stack.pop();
     if(typeof item==="string"){//We can just add it directly
       backup+=item;
@@ -319,7 +319,7 @@ var t0=Date.now();
 while(true){
   search();
   iterations+=1;
-  if(tree[1].length===0){
+  if(!tree[1].length){
     statusreport();
     console.log("No more objects");
     process.exit();
