@@ -200,7 +200,7 @@ var search=function(){//Do one iteration of DFS
     var branches=currnode[1];//We know that this exists, since node.length===2.
     for(var i=0;i<branches.length;i++){//Sift through the branches on this node, and find the viable ones.
       var child=branches[i];
-      if(child.length===1||child[1].length>0){
+      if(child.length===1||child[1].length){
         //The first condition means that the child hasn't been searched yet, so it could be viable.
         //Iff the second condition is FALSE, then we've ruled out all extensions from that child, so the child is not viable.
         viable.push(child);
